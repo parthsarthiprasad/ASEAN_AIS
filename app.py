@@ -4,18 +4,18 @@ import pickle
 import numpy as np
 from flask import Flask, request
 
-model = None
+model = pickle.load(open('aisclassifier.sav','rb'))
 app = Flask(__name__)
 meanVal = np.array([183.688783,183.000054,983.063901,4.100918])
 stdDeviation = np.array([83.070587,82.326782,1.664243,1.454851])
 
 #todo add weather data correction in the implementation
 
-def load_model():
-    global model
-    # model variable refers to the global variable
-    with open('aisclassifier.sav', 'rb') as f:
-        model = pickle.load(f)
+# def load_model():
+#     global model
+#     # model variable refers to the global variable
+#     with open('aisclassifier.sav', 'rb') as f:
+#         model = pickle.load(f)
 
 
 @app.route('/')
@@ -40,5 +40,5 @@ def get_prediction():
 
 
 if __name__ == '__main__':
-    load_model()  # load model at the beginning once only
+    # load_model()  # load model at the beginning once only
     app.run(ssl_context='adhoc', host='127.0.0.1', port=5556)
