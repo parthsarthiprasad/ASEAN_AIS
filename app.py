@@ -31,6 +31,7 @@ def home_endpoint():
 def get_prediction():
     # Works only for a single sample
     if request.method == 'POST':
+<<<<<<< HEAD
         tempdata = request.get_json()  # Get data posted as a json
         tempdata = np.array(tempdata)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
         # recieved parameters
@@ -40,20 +41,24 @@ def get_prediction():
         EEOIvars = tempdata[4:]
       
 
+=======
+        data = request.get_json()  # Get data posted as a json
+        data = np.array(data)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
+
+        # data normalization
+>>>>>>> 7bd4b03e99792a6d0a7cb5d4d61cd278bfd1632f
         for i in range(4):
             data[0][i] = ((data[0][i]) - (meanVal[i]))/(stdDeviation[i])
             # print(data.shape)
             # print(str(i)+" "+str(data[0][i])+" "+str(meanVal[i])+" "+str(stdDeviation[i]))
-            # print()
-        # print(data)
+
         prediction = model.predict(data)  # runs globally loaded model on the data
         # terr = EEOICALC(prediction[0],EEOIvars)
         terr = (prediction[0]/15)
         terr = min(terr,1)
-        # print(terr)
     return str(terr)
-
 
 if __name__ == '__main__':
     # load_model()  # load model at the beginning once only
-    app.run(ssl_context='adhoc', host='127.0.0.1', port=5556)
+    # app.run(ssl_context='adhoc', host='127.0.0.1', port=5556)
+    app.run()

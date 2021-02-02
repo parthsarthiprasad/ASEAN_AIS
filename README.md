@@ -1,18 +1,18 @@
-# EDA of AIS Data & Building ML Model for Vessel's Anomaly Behaviour Detection
+# Building ML Model for Vessel's Oil Spill Detection using AIS data
 ## Overview:
-Vessel traffic data, or Automatic Identification System (AIS) data, are collected by the U.S. Coast Guard through an onboard navigation safety device that transmits and monitors the location and characteristics of large vessels in U.S. and international waters in real time. In the U.S., the Coast Guard and commercial vendors collect AIS data, which can also be used for a variety of coastal planning purposes.
+Indian and ASEAN countries are located on global oil takner oceanic superhighway. This route also has sensitive ecosystems such as coral reefs and seagrass meadows in the vicinity. The environmental impact of an oil spill from a tanker ship is well documented. Oil Spills do not occur instataneously. There are events e.g. machinary malfunction that lead to such disasters. Before a spill occurs the crew might be well aware of the challenging situation and often spend time in avoiding such an event. During such times, the ship movement behavior may change from its normal pattern i.e. travelling at a predicted speed towards the port of call. At present, however there is no mechanism that can look into such patterns and predict a potential spill event to mitigate it in timely manner.
 
-The Bureau of Ocean Energy Management (BOEM) and the National Oceanic and Atmospheric Administration (NOAA) have worked jointly to repurpose and make available some of the most important records from the U.S. Coast Guard’s national network of AIS receivers. Information such as location, time, ship type, speed, length, beam, and draft have been extracted from the raw data and prepared for analyses.
-
-So in this project, we'll perform some basic exploratory data analysis on AIS data, after that we'll make the <b>ML(SVR) model</b> to identify vessel anomaly behavior detection.
+Information such as location, time, ship type, speed, length, beam, and draft have been extracted from the raw data and prepared for analyses.
+## Objective:
+In this project, we'll implement a <b>SVR model</b> to predict oil spill event in vessels, and track if there's any anamoly behaviour exists.
 ## Data Source
-https://marinecadastre.gov/ais/
-We performed analysis on <b>AIS_2017_01_Zone10</b> dataset.
+ftp://ftp.ais.dk/ais_data/
+<!-- We performed analysis on <b>aisdk_20201228.csv</b> dataset.
 ## Explanation:
-Now we explain every step of our project in detail with screenshots.
+Now we explain every step of our project in detail with screenshots. -->
 
 <a id='toc'></a>
-## Table of Content:
+<!-- ## Table of Content:
 
 [1. Exploratory Data Analysis of csv file (January, UTM Zone 10, 2017)](#l1)<br>
 [2. Data Cleaning](#l2)<br>
@@ -167,4 +167,4 @@ The values having a larger difference are anomalous.
 <a id='conclusion'></a>
 ## Conclusion:
 So in this way, we can predict any feature of AIS data and then find anomaly behavior of any vessel.
-
+ -->
