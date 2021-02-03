@@ -45,6 +45,10 @@ def EEDICALC(predicted_Velocity, EEDIvars):
     shipdistance = EEDIvars[3]/1.852
     shipvelocity = EEDIvars[4]
     vesselClass  = 3
+    #if ship has reached the destination
+    if(shipdistance==0):
+        return 1
+    
     while(vesselClass>0):
        if(shiplength<length[vesselClass-1]):
            vesselClass= vesselClass-1
@@ -54,7 +58,7 @@ def EEDICALC(predicted_Velocity, EEDIvars):
     vesselPower = power[vesselClass]
     velocityRatio = (shipvelocity/predicted_Velocity)**3
     emissionFactor = 0.670
-    cutoffValue = 0.8*4000
+    cutoffValue = 0.96179*(shipcargo + shipclassDWT[vesselClass]) -0.488
 
     numerator = vesselPower*velocityRatio*(shipdistance/shipvelocity)*emissionFactor
     denominator = shipcargo*shipdistance
