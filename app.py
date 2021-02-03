@@ -20,7 +20,7 @@ power = np.array([36419,20063,13490,12118])
 #todo add weather data correction in the implementation
 
 # Fomula for estimation :
-#      ESTIMATION VALUE = (Pv * 
+#      ESTIMATION VALUE = (Pv * Carbon conversion factor
 #                       ((vc/vpredicted)^3)*Tm)/ 
                         # (cargo carried* distance travel)
 #  arguments : 
@@ -38,12 +38,12 @@ def home_endpoint():
     return 'Hello World!'
 
 
-def EEOICALC(predicted_Velocity, EEOIvars):
-    shiplength   = EEOIvars[0]
-    shipbreadth  = EEOIvars[1]
-    shipcargo    = EEOIvars[2]
-    shipdistance = EEOIvars[3]
-    shipvelocity = EEOIvars[4]*1.852
+def EEDICALC(predicted_Velocity, EEDIvars):
+    shiplength   = EEDIvars[0]
+    shipbreadth  = EEDIvars[1]
+    shipcargo    = EEDIvars[2]/1000
+    shipdistance = EEDIvars[3]/1.852
+    shipvelocity = EEDIvars[4]
     vesselClass  = 3
     while(vesselClass>0):
        if(shiplength<length[vesselClass-1]):
@@ -54,11 +54,12 @@ def EEOICALC(predicted_Velocity, EEOIvars):
     vesselPower = power[vesselClass]
     velocityRatio = (shipvelocity/predicted_Velocity)**3
     emissionFactor = 0.670
+    cutoffValue = 0.8*4000
 
     numerator = vesselPower*velocityRatio*(shipdistance/shipvelocity)*emissionFactor
     denominator = shipcargo*shipdistance
-    EEOI = numerator/denominator
-    return EEOI
+    EEDI = numerator/denominator
+    return (cutoffValue-EEDI)/cutoffValue
     
 @app.route('/predict', methods=['POST'])
 def get_prediction():
@@ -66,7 +67,7 @@ def get_prediction():
     if request.method == 'POST':
         tempdata = request.get_json()  # Get data posted as a json
         data = tempdata[0:4]
-        EEOIvars = tempdata[4:]
+        EEDIvars = tempdata[4:]
        
         data = np.array(data)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
 
@@ -79,10 +80,10 @@ def get_prediction():
             # print(str(i)+" "+str(data[0][i])+" "+str(meanVal[i])+" "+str(stdDeviation[i]))
 
         prediction = model.predict(data)  # runs globally loaded model on the data
-        terr = EEOICALC(prediction[0],EEOIvars)
+        terr = EEDICALC(prediction[0],EEDIvars)
         print(terr)
         # terr = (prediction[0]/15)
-        terr = terr%1
+    
         terr = min(terr,1)
     return str(terr)
 
