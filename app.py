@@ -19,46 +19,74 @@ power = np.array([36419,20063,13490,12118])
 # ~rest ( medium rannge)
 #todo add weather data correction in the implementation
 
-# def EEOICALC(predicted_Velocity, EEOIvars):
-#     ESTIMATION VALUE = Power of vessel * (vc/vpredicted)
+# Fomula for estimation :
+#      ESTIMATION VALUE = (Pv * 
+#                       ((vc/vpredicted)^3)*Tm)/ 
+                        # (cargo carried* distance travel)
+#  arguments : 
+
+#  Pv           : Power delivery of the ship's engine
+#  vc           : Velocity of the ship
+#  vpredicted   : Ideal Velocity of the ship
+#  Tm           : Time duration of execution
+#  Cm           : Cargo carried by the vessel
+#  D            : distance travel
+
 
 @app.route('/')
 def home_endpoint():
     return 'Hello World!'
 
 
+def EEOICALC(predicted_Velocity, EEOIvars):
+    shiplength   = EEOIvars[0]
+    shipbreadth  = EEOIvars[1]
+    shipcargo    = EEOIvars[2]
+    shipdistance = EEOIvars[3]
+    shipvelocity = EEOIvars[4]*1.852
+    vesselClass  = 3
+    while(vesselClass>0):
+       if(shiplength<length[vesselClass-1]):
+           vesselClass= vesselClass-1
+       else: 
+           break
+
+    vesselPower = power[vesselClass]
+    velocityRatio = (shipvelocity/predicted_Velocity)**3
+    emissionFactor = 0.670
+
+    numerator = vesselPower*velocityRatio*(shipdistance/shipvelocity)*emissionFactor
+    denominator = shipcargo*shipdistance
+    EEOI = numerator/denominator
+    return EEOI
+    
 @app.route('/predict', methods=['POST'])
 def get_prediction():
     # Works only for a single sample
     if request.method == 'POST':
-<<<<<<< HEAD
         tempdata = request.get_json()  # Get data posted as a json
-        tempdata = np.array(tempdata)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
-        # recieved parameters
-        # COG, Heading, Pressure, Temperature, Lenth, Breadth, Cargo, Speed of vessel
-        print(tempdata.shape)
         data = tempdata[0:4]
         EEOIvars = tempdata[4:]
-      
-
-=======
-        data = request.get_json()  # Get data posted as a json
+       
         data = np.array(data)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
 
-        # data normalization
->>>>>>> 7bd4b03e99792a6d0a7cb5d4d61cd278bfd1632f
+        # recieved parameters
+        # COG, Heading, Pressure, Temperature, Lenth, Breadth, Cargo, Diatance,Speed of vessel
+
         for i in range(4):
             data[0][i] = ((data[0][i]) - (meanVal[i]))/(stdDeviation[i])
             # print(data.shape)
             # print(str(i)+" "+str(data[0][i])+" "+str(meanVal[i])+" "+str(stdDeviation[i]))
 
         prediction = model.predict(data)  # runs globally loaded model on the data
-        # terr = EEOICALC(prediction[0],EEOIvars)
-        terr = (prediction[0]/15)
+        terr = EEOICALC(prediction[0],EEOIvars)
+        print(terr)
+        # terr = (prediction[0]/15)
+        terr = terr%1
         terr = min(terr,1)
     return str(terr)
 
 if __name__ == '__main__':
     # load_model()  # load model at the beginning once only
-    # app.run(ssl_context='adhoc', host='127.0.0.1', port=5556)
-    app.run()
+    app.run(ssl_context='adhoc', host='127.0.0.1', port=5556)
+    # app.run()
